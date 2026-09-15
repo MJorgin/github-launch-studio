@@ -120,8 +120,14 @@ def render(output: Path) -> None:
     draw.text((82, 248), "repo launch-ready.", font=bold(66), fill=(248, 250, 252, 255))
     draw.rounded_rectangle((84, 335, 210, 342), radius=4, fill=(52, 211, 153, 210))
 
-    subtitle = "Positioning · README · demo assets · benchmarks · bilingual launch"
-    draw.text((84, 374), subtitle, font=regular(25), fill=(203, 213, 225, 255))
+    subtitle_lines = [
+        "Positioning · README · demo assets",
+        "Benchmarks · bilingual launch copy",
+    ]
+    subtitle_y = 374
+    for line in subtitle_lines:
+        draw.text((84, subtitle_y), line, font=regular(25), fill=(203, 213, 225, 255))
+        subtitle_y += 38
 
     draw.text((84, 516), "MJorgin/github-launch-studio", font=bold(23), fill=(226, 232, 240, 255))
     draw.text((84, 552), "Audit real repository evidence. Publish only after approval.", font=regular(19), fill=(148, 163, 184, 255))
