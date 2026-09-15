@@ -1,0 +1,3 @@
+interface:
+  display_name: "GitHub Launch Studio"
+  short_description: "Audit, package, and launch GitHub open-source projects"
