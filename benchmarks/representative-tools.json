@@ -1,0 +1,42 @@
+[
+  {
+    "repo": "octokatherine/readme.so",
+    "category": "README builders",
+    "why": "Drag-and-drop README editor with a simple section-based activation path."
+  },
+  {
+    "repo": "rahuldkjain/github-profile-readme-generator",
+    "category": "Profile README generators",
+    "why": "Viral personal-profile builder with customizable components and visual stats."
+  },
+  {
+    "repo": "semantic-release/semantic-release",
+    "category": "Release automation",
+    "why": "Mature automated versioning, changelog, package publishing, and release workflow."
+  },
+  {
+    "repo": "googleapis/release-please",
+    "category": "Release automation",
+    "why": "Conventional-commit release PR automation used by many API and infrastructure projects."
+  },
+  {
+    "repo": "orhun/git-cliff",
+    "category": "Changelog generation",
+    "why": "Highly customizable changelog generator with strong developer adoption."
+  },
+  {
+    "repo": "changesets/changesets",
+    "category": "Release automation",
+    "why": "Versioning and changelog workflow focused on monorepos and package ecosystems."
+  },
+  {
+    "repo": "star-history/star-history",
+    "category": "GitHub analytics",
+    "why": "Widely used star-history visualization for social proof and trend analysis."
+  },
+  {
+    "repo": "github/spec-kit",
+    "category": "Agent workflow kits",
+    "why": "Official high-adoption toolkit showing demand for structured agent-driven development workflows."
+  }
+]

@@ -6,6 +6,10 @@ A Codex skill for turning a working repository into a launch-ready open-source p
 
 It helps you sharpen positioning, improve the README and quickstart, plan convincing demo assets, and prepare Chinese/English release copy—without fake growth or noisy marketing.
 
+![GitHub Launch Studio social card](./assets/social-card.png)
+
+**Audit → Position → Benchmark → Package → Demo → Launch**
+
 ## When to use it
 
 Use GitHub Launch Studio before:
@@ -30,10 +34,25 @@ Give me a prioritized launch checklist for next week.
 
 - Evidence-based launch-readiness scores across clarity, activation, proof, trust, distribution, and maintenance.
 - A concise positioning statement, target user, five-minute promise, differentiator, and non-goals.
+- A grounded benchmark map across README builders, release automation, changelog tools, analytics, and agent workflow kits.
 - README and quickstart recommendations with a first-time-user test.
 - Demo asset briefs for screenshots, GIFs, videos, and social cards.
 - GitHub release notes and channel-specific Chinese/English announcement copy.
 - A publishing checklist that keeps secrets, permissions, branch protection, CI, and feedback triage in scope.
+
+## How it compares
+
+GitHub Launch Studio is complementary to release automation, not a replacement for it:
+
+| Tool type | Strong at | GitHub Launch Studio adds |
+| --- | --- | --- |
+| README editors | Filling and arranging README sections | Positioning, evidence, quickstart quality, and launch narrative |
+| Profile README generators | Personal GitHub profile components | Project launch packaging rather than a personal profile |
+| semantic-release / release-please / git-cliff / Changesets | Versioning, changelogs, release PRs, and package publishing | Human-facing launch story, demo plan, bilingual copy, and channel plan |
+| Star History | Post-launch star trends | Pre-launch activation and distribution work |
+| Agent spec/workflow kits | Structured development process | A specialized launch-growth workflow |
+
+See the full [benchmark map](./docs/BENCHMARKS.md) / [中文对标说明](./docs/BENCHMARKS.zh-CN.md). Metrics are observed on a stated date and can be refreshed with the bundled script.
 
 ## Installation
 
@@ -64,6 +83,25 @@ It checks signals such as:
 
 The scores are heuristics for a first pass. The skill should still inspect the repository semantically before recommending product positioning or copy.
 
+## Refresh benchmarks
+
+```bash
+python3 scripts/benchmark_github.py \
+  --config benchmarks/representative-tools.json \
+  --format markdown
+```
+
+The benchmark helper uses the public GitHub API. Set `GITHUB_TOKEN` to raise the rate limit; the script never prints token values.
+
+## Regenerate the social card
+
+The repository includes a rendered `assets/social-card.png`. To regenerate it locally:
+
+```bash
+python3 -m pip install pillow
+python3 scripts/render_social_card.py --output assets/social-card.png
+```
+
 ## How it works
 
 1. Audit the repository using real file and Git metadata.
@@ -88,6 +126,10 @@ Read [SKILL.md](./SKILL.md) for the full operating rules and the [references](./
 - More repository-language heuristics and clean-install probes.
 - Example launch teardowns from high-quality open-source projects.
 - Optional bilingual release-note templates for common ecosystems.
+
+## Contributing and security
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) and [SECURITY.md](./SECURITY.md).
 
 ## License
 

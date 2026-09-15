@@ -17,8 +17,8 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Compile audit script
-        run: python -m py_compile scripts/repo_audit.py
+      - name: Compile Python scripts
+        run: python -m py_compile scripts/repo_audit.py scripts/benchmark_github.py scripts/render_social_card.py
 
       - name: Run launch audit self-test
         run: python scripts/repo_audit.py . --pretty

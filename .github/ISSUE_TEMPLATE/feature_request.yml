@@ -1,0 +1,29 @@
+name: Feature request
+description: Suggest a launch workflow, heuristic, benchmark, or documentation improvement.
+title: "feat: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or launch workflow
+      description: What launch task is difficult or poorly supported today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety check
+      options:
+        - label: This does not require fake metrics, bought stars, mass outreach, undisclosed promotion, or automatic external posting.
+          required: true

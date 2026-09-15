@@ -23,13 +23,15 @@ Do not use it for generic documentation unrelated to a launch, or for fake growt
 
 1. **Audit** — inspect evidence, score launch readiness, and produce a prioritized fix list.
 2. **Position** — sharpen target user, job-to-be-done, category, alternatives, proof, and non-goals.
-3. **Package** — improve the repository surfaces that turn curiosity into a trial: README, quickstart, examples, docs, license, issue templates, and release page.
-4. **Demo** — plan real screenshots/GIFs/videos and social visuals; generate assets only when the user asks and the needed tooling is available.
-5. **Launch** — prepare release notes, channel-specific copy, timing, and a post-launch triage plan.
+3. **Benchmark** — compare adjacent tools and high-quality repositories without copying their strategy or metrics.
+4. **Package** — improve the repository surfaces that turn curiosity into a trial: README, quickstart, examples, docs, license, issue templates, and release page.
+5. **Demo** — plan real screenshots/GIFs/videos and social visuals; generate assets only when the user asks and the needed tooling is available.
+6. **Launch** — prepare release notes, channel-specific copy, timing, and a post-launch triage plan.
 
 Select only the references relevant to the current mode:
 
 - `references/audit-and-positioning.md` — scorecard, evidence rules, positioning formula, and audit output format.
+- `references/benchmarking.md` — adjacent-tool map, comparison rules, and GitHub metadata refresh workflow.
 - `references/readme-and-demo.md` — README structure, first-run validation, and demo asset storyboards.
 - `references/launch-copy.md` — message house, release notes, and Chinese/English channel packs.
 - `references/publish-checklist.md` — verification, repository settings, release operations, and launch-day checklist.
@@ -38,7 +40,7 @@ Select only the references relevant to the current mode:
 
 1. **Establish scope.** Identify the repository, launch type, target user, maturity, preferred channels, languages, and whether the user wants analysis only, local edits, or a prepared pull request. Infer these from the repository when possible and state important assumptions.
 2. **Audit before writing.** For a local repository, run `python3 scripts/repo_audit.py <repo-path>` from this skill directory. For a remote URL, either ask for a local checkout or obtain network permission before cloning. The script is read-only and must not print secret values.
-3. **Position before polishing.** Do not begin with decorative README wording. First decide the primary audience, the five-minute value path, the strongest proof, and the sharpest alternative.
+3. **Position and benchmark before polishing.** Do not begin with decorative README wording. First decide the primary audience, the five-minute value path, the strongest proof, and the sharpest alternative. When useful, run `python3 scripts/benchmark_github.py --config benchmarks/representative-tools.json --format markdown`.
 4. **Create the smallest convincing launch set.** Prefer a complete hero, copy-pasteable quickstart, one real example, visible proof, license, limitations, and support path over exhaustive documentation.
 5. **Preserve truth and voice.** Support claims with repository evidence. Replace vague superlatives with concrete outcomes, constraints, benchmarks, or examples. For Chinese-origin projects, write natural English rather than translating idioms literally.
 6. **Verify the activation path.** If code or installation instructions changed, run the relevant clean-install, lint, build, or test command that is safe and available. Check links, media paths, prerequisites, and setup/configuration steps.
