@@ -65,10 +65,18 @@ git clone https://github.com/MJorgin/github-launch-studio.git \
 
 ## 本地仓库体检
 
-内置脚本只读、离线运行，不会打印密钥文件内容：
+内置脚本离线运行，不会打印密钥文件内容。扫描过程本身是只读的；只有传入 `--output` 时才会写入报告文件：
 
 ```bash
 python3 ~/.codex/skills/github-launch-studio/scripts/repo_audit.py /path/to/repository --pretty
+```
+
+生成适合分享的 Markdown 报告：
+
+```bash
+python3 scripts/repo_audit.py /path/to/repository \
+  --format markdown \
+  --output /path/to/repository/LAUNCH.md
 ```
 
 它会检查：
@@ -80,6 +88,11 @@ python3 ~/.codex/skills/github-launch-studio/scripts/repo_audit.py /path/to/repo
 - 0-5 分的初步发布就绪度和优先问题。
 
 分数只是启发式信号。真正的定位、文案和发布策略还需要结合项目内容做语义判断。
+
+## 发布工具包
+
+- [30 秒 Demo 分镜](./docs/demo-storyboard.md)：录制计划、字幕和发布前检查。
+- [待审发布文案](./docs/launch-posts.md)：X、V2EX、即刻草稿，确认前不会自动发布。
 
 ## 刷新对标数据
 

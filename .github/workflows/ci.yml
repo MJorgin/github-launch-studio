@@ -22,3 +22,26 @@ jobs:
 
       - name: Run launch audit self-test
         run: python scripts/repo_audit.py . --pretty
+
+      - name: Check Markdown launch report
+        run: |
+          python scripts/repo_audit.py . --format markdown --output "$RUNNER_TEMP/LAUNCH.md"
+          grep -q "# GitHub Launch Readiness Report" "$RUNNER_TEMP/LAUNCH.md"
+          grep -q "## Scores" "$RUNNER_TEMP/LAUNCH.md"
+          grep -q "## Repository signals" "$RUNNER_TEMP/LAUNCH.md"
+          ! grep -qE "/home/runner|https?://[^ ]*:[^ @/]+@" "$RUNNER_TEMP/LAUNCH.md"
+
+      - name: Verify remote credential redaction
+        run: |
+          python - <<'PY'
+          import importlib.util
+
+          spec = importlib.util.spec_from_file_location("repo_audit", "scripts/repo_audit.py")
+          module = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(module)
+
+          assert module.safe_remote_url("https://github.com/org/repo.git") == "https://github.com/org/repo.git"
+          redacted = module.safe_remote_url("https://user:secret-token@github.com/org/repo.git")
+          assert redacted == "https://github.com/org/repo.git"
+          assert "secret-token" not in redacted
+          PY

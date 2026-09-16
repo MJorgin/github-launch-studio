@@ -67,10 +67,18 @@ For local development, copy or symlink this folder into your Codex skills direct
 
 ## Local repository audit
 
-The bundled audit script is read-only, works offline, and never prints credential file contents.
+The bundled audit script works offline and never prints credential file contents. The scan itself is read-only; it writes a file only when `--output` is provided.
 
 ```bash
 python3 ~/.codex/skills/github-launch-studio/scripts/repo_audit.py /path/to/repository --pretty
+```
+
+Generate a shareable Markdown report:
+
+```bash
+python3 scripts/repo_audit.py /path/to/repository \
+  --format markdown \
+  --output /path/to/repository/LAUNCH.md
 ```
 
 It checks signals such as:
@@ -82,6 +90,11 @@ It checks signals such as:
 - simple 0-5 launch-readiness scores and prioritized findings.
 
 The scores are heuristics for a first pass. The skill should still inspect the repository semantically before recommending product positioning or copy.
+
+## Launch kit
+
+- [30-second demo storyboard](./docs/demo-storyboard.md) — recording plan, captions, and pre-flight checks.
+- [Draft launch posts](./docs/launch-posts.md) — X, V2EX, and 即刻 drafts for review before posting.
 
 ## Refresh benchmarks
 

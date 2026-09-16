@@ -13,10 +13,11 @@ import json
 import os
 import re
 import subprocess
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
-from urllib.parse import unquote, urlsplit
+from urllib.parse import unquote, urlsplit, urlunsplit
 
 
 SKIP_DIRS = {
@@ -104,6 +105,21 @@ def git(root: Path, *args: str) -> str | None:
     except (OSError, subprocess.SubprocessError):
         return None
     return result.stdout.strip() if result.returncode == 0 else None
+
+
+def safe_remote_url(value: str | None) -> str | None:
+    """Redact userinfo that can appear in a URL-shaped remote."""
+    if not value:
+        return None
+
+    try:
+        parsed = urlsplit(value)
+        if parsed.username is not None or parsed.password is not None:
+            host_and_port = parsed.netloc.rsplit("@", 1)[-1]
+            return urlunsplit(parsed._replace(netloc=host_and_port))
+    except ValueError:
+        return value
+    return value
 
 
 def parse_json(path: Path) -> dict[str, Any]:
@@ -445,6 +461,145 @@ def build_findings(signals: dict[str, Any]) -> list[dict[str, str]]:
     return findings
 
 
+SCORE_LABELS = {
+    "clarity": "Clarity",
+    "activation": "Activation",
+    "trust": "Trust",
+    "proof": "Proof",
+    "distribution": "Distribution",
+    "maintenance": "Maintenance",
+}
+
+
+def markdown_cell(value: Any) -> str:
+    text = "—" if value is None else str(value)
+    return text.replace("|", "\\|").replace("\n", " ").strip() or "—"
+
+
+def score_verdict(score: float) -> str:
+    if score >= 4.5:
+        return "Ready for broad launch after final channel preparation"
+    if score >= 3.5:
+        return "Ready for a targeted launch with noted gaps"
+    if score >= 2.5:
+        return "Usable by an expert audience; package the basics first"
+    return "Not ready for public attention yet"
+
+
+def yes_no(value: Any) -> str:
+    return "Yes" if bool(value) else "No"
+
+
+def render_markdown(result: dict[str, Any]) -> str:
+    scores = result.get("scores", {})
+    average = sum(scores.values()) / len(scores) if scores else 0
+    findings = result.get("findings", [])
+    readme = result.get("readme", {})
+    git_info = result.get("git", {})
+    ci = result.get("ci", {})
+    files = result.get("files", {})
+
+    lines = [
+        "# GitHub Launch Readiness Report",
+        "",
+        f"**Repository:** `{markdown_cell(result.get('name'))}`  ",
+        f"**Generated (UTC):** `{markdown_cell((result.get('generated_at') or '')[:19])}`  ",
+        f"**Overall score:** **{average:.1f} / 5** — {score_verdict(average)}",
+        "",
+        "## Scores",
+        "",
+        "| Dimension | Score | Signal |",
+        "| --- | ---: | --- |",
+    ]
+
+    score_notes = {
+        "clarity": "Can a first-time visitor understand who it is for and what it does?",
+        "activation": "Can a new user reach a meaningful result quickly?",
+        "trust": "Are rights, validation, maintenance signals, and support paths credible?",
+        "proof": "Is there visible evidence that the project works?",
+        "distribution": "Can the project be understood and shared beyond the repository?",
+        "maintenance": "Are issues, docs, CI, and future triage realistic?",
+    }
+    for key, label in SCORE_LABELS.items():
+        lines.append(f"| {label} | {scores.get(key, 0)} / 5 | {score_notes[key]} |")
+
+    lines.extend(["", "## Prioritized findings", ""])
+    if findings:
+        lines.extend(
+            [
+                "| Severity | Evidence | User impact | Recommendation |",
+                "| --- | --- | --- | --- |",
+            ]
+        )
+        severity_rank = {"blocker": 0, "high": 1, "medium": 2, "low": 3}
+        for finding in sorted(findings, key=lambda item: severity_rank.get(item.get("severity"), 9)):
+            lines.append(
+                "| {severity} | {evidence} | {impact} | {recommendation} |".format(
+                    severity=markdown_cell(finding.get("severity")).upper(),
+                    evidence=markdown_cell(finding.get("evidence")),
+                    impact=markdown_cell(finding.get("impact")),
+                    recommendation=markdown_cell(finding.get("recommendation")),
+                )
+            )
+    else:
+        lines.append(
+            "No rule-based findings were detected by the offline heuristic audit. "
+            "This does not replace semantic positioning review, clean-install testing, or launch copy review."
+        )
+
+    lines.extend(
+        [
+            "",
+            "## Repository signals",
+            "",
+            "| Area | Signal |",
+            "| --- | --- |",
+            f"| Git branch / head | `{markdown_cell(git_info.get('branch'))}` / `{markdown_cell(git_info.get('head'))}` |",
+            f"| Origin remote | `{markdown_cell(git_info.get('origin'))}` |",
+            f"| Tags | {git_info.get('tag_count', 0)} |",
+            f"| Last commit (UTC) | `{markdown_cell((git_info.get('last_commit_at') or '')[:10])}` |",
+            f"| README | `{markdown_cell(readme.get('path'))}` |",
+            f"| README title | {markdown_cell(readme.get('title'))} |",
+            f"| Code blocks / images / badges | {readme.get('code_fences', 0)} / {readme.get('images', 0)} / {readme.get('badge_count', 0)} |",
+            f"| Broken relative README links | {len(readme.get('broken_relative_links', []))} |",
+            f"| CI | Present: `{yes_no(ci.get('has_ci'))}`; test: `{yes_no(ci.get('has_test_check'))}`; build: `{yes_no(ci.get('has_build_check'))}`; lint: `{yes_no(ci.get('has_lint_check'))}` |",
+            f"| Project manifests / lockfiles | {len(result.get('manifests', []))} / {len(result.get('lockfiles', []))} |",
+            f"| Issue templates / contributing / security policy | `{yes_no(files.get('has_issue_templates'))}` / `{yes_no(files.get('has_contributing'))}` / `{yes_no(files.get('has_security_policy'))}` |",
+            f"| Possible secret-bearing files | {len(files.get('secret_candidates', []))} |",
+        ]
+    )
+
+    broken_links = readme.get("broken_relative_links", [])
+    secret_candidates = files.get("secret_candidates", [])
+    if broken_links or secret_candidates:
+        lines.extend(["", "## Items to inspect before publishing", ""])
+        if broken_links:
+            lines.extend(["### Broken relative README links", ""])
+            lines.extend(f"- `{link}`" for link in broken_links)
+            lines.append("")
+        if secret_candidates:
+            lines.extend(["### Possible secret-bearing files", "", "Filenames only; contents are intentionally not printed.", ""])
+            lines.extend(f"- `{path}`" for path in secret_candidates)
+            lines.append("")
+
+    lines.extend(
+        [
+            "",
+            "## Recommended next actions",
+            "",
+            "1. Resolve blocker/high findings before driving external traffic.",
+            "2. Confirm the target user, five-minute value path, proof, and differentiator semantically.",
+            "3. Run the documented quickstart from a clean environment.",
+            "4. Prepare one real demo asset and channel-specific launch copy.",
+            "5. Re-run this audit after packaging changes.",
+            "",
+            "---",
+            "Generated by GitHub Launch Studio's offline, read-only repository audit. Scores are heuristic and should be interpreted alongside repository-specific review.",
+        ]
+    )
+    return "\n".join(lines) + "\n"
+
+
 def audit(root: Path) -> dict[str, Any]:
     root = root.resolve()
     tree = discover_tree(root)
@@ -454,7 +609,7 @@ def audit(root: Path) -> dict[str, Any]:
         "is_git": (root / ".git").exists(),
         "branch": git(root, "branch", "--show-current"),
         "head": git(root, "rev-parse", "--short", "HEAD"),
-        "origin": git(root, "remote", "get-url", "origin"),
+        "origin": safe_remote_url(git(root, "remote", "get-url", "origin")),
         "tag_count": len((git(root, "tag", "--list") or "").splitlines()) if git(root, "tag", "--list") is not None else 0,
         "last_commit_at": git(root, "log", "-1", "--format=%cI"),
     }
@@ -521,14 +676,30 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Read-only GitHub launch readiness audit")
     parser.add_argument("path", nargs="?", default=".", help="Repository path (defaults to current directory)")
     parser.add_argument("--pretty", action="store_true", help="Pretty-print JSON")
+    parser.add_argument("--format", choices=["json", "markdown"], default="json", help="Output format")
+    parser.add_argument("--output", type=Path, help="Write the report to a file instead of stdout")
     args = parser.parse_args()
 
     root = Path(args.path)
     if not root.exists() or not root.is_dir():
         parser.error(f"repository path does not exist or is not a directory: {root}")
 
-    result = audit(root)
-    print(json.dumps(result, ensure_ascii=False, indent=2 if args.pretty else None, sort_keys=False))
+    try:
+        result = audit(root)
+        if args.format == "markdown":
+            rendered = render_markdown(result)
+        else:
+            rendered = json.dumps(result, ensure_ascii=False, indent=2 if args.pretty else None, sort_keys=False)
+
+        if args.output:
+            args.output.parent.mkdir(parents=True, exist_ok=True)
+            args.output.write_text(rendered, encoding="utf-8")
+            print(args.output.resolve())
+        else:
+            print(rendered)
+    except (OSError, ValueError, json.JSONDecodeError) as error:
+        print(f"error: {error}", file=sys.stderr)
+        return 1
     return 0
 
 
