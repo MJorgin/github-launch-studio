@@ -2,7 +2,31 @@
 
 Goal: prove that GitHub Launch Studio turns an ordinary repository into a launch-ready package. The demo should show a real audit, a readable report, benchmark context, and prepared launch copy—not a mock product UI.
 
-## Recording setup
+A rendered reference film is committed at `assets/launch-demo.mp4` (with `assets/launch-demo.gif` for the README). It is a deterministic Pillow/ffmpeg animation rather than a live desktop capture, so it never exposes local paths, shell history, or notifications, and it regenerates byte-identically in CI.
+
+## Rendered reference film (shipped version)
+
+- Concept: **launch preflight field manual**. The product performs a readiness check before public launch, so the film speaks the language of a paper checklist/manual instead of a generic dark dashboard; the core deliverable is itself a Markdown report.
+- Visual language: warm paper background with subtle grain, ink text, a single cinnabar accent (plus ochre/pine status colors), near-sharp document sheets with hairline rules, tracked-caps mono labels. Deliberately avoids the default dark-neon AI palette.
+- Persistent spine: a six-step preflight rail (`AUDIT → REPORT → PACKAGE → BENCHMARK → COPY → LAUNCH`) runs down the left edge of every scene and fills as the story progresses.
+- Before/after score: the report scene shows **2.3/5 · NOT CLEARED**; the CTA scene shows **4.4/5** using the same five-segment gauge language, and ends with a distressed cinnabar **CLEARED FOR LAUNCH** stamp (the film's single hero effect).
+- Motion discipline: one action per scene, human-paced terminal typing with short pauses, staggered entrances, ≥1s holds on results, paper-colored cross-fades between scenes.
+- Specs: 1280×720, 20fps, 30.0s H.264 MP4 (~1.1 MB); README GIF at 1024×576, 12fps (~5.3 MB).
+- Regenerate: `python3 scripts/render_launch_demo.py` (requires Pillow and ffmpeg; fonts resolve to system Avenir Next / Menlo / Hiragino Sans GB on macOS).
+
+| Time | Scene | Frame |
+| --- | --- | --- |
+| 0-3s | Problem | Headline + preflight checklist sheet with mixed pass/warn/fail marks |
+| 3-8s | Run audit | Dark terminal card; typed command, then `LAUNCH.md written` result line |
+| 8-13s | Show report | `LAUNCH.md` sheet: 2.3/5, six five-segment gauges, two prioritized findings |
+| 13-18s | Package | Numbered six-item "smallest convincing launch set" checklist |
+| 18-22s | Benchmarks | Swiss-rule comparison table against adjacent tools |
+| 22-26s | Bilingual pack | Two draft sheets (X/English, V2EX/中文) stamped READY FOR REVIEW |
+| 26-30s | CTA | Headline, repo URL, 4.4/5 scorecard, CLEARED FOR LAUNCH stamp |
+
+## Optional live-recording setup
+
+The shipped film is generated, not recorded. These notes remain useful if you want a real-screen variant:
 
 - Canvas: 1440×900 or 1512×982, exported as 1280×720 MP4/GIF when possible.
 - Duration: 28-32 seconds.
@@ -12,17 +36,7 @@ Goal: prove that GitHub Launch Studio turns an ordinary repository into a launch
 - Use a repository with no secrets in the terminal, README, or file tree.
 - Record two short takes if one live run is too risky.
 
-## Storyboard
-
-| Time | Scene | Visual | On-screen caption |
-| --- | --- | --- | --- |
-| 0-3s | Problem | Open a plain repository in GitHub or the file tree. | Your code is ready. Is your launch? |
-| 3-8s | Run audit | Terminal runs `python3 scripts/repo_audit.py <repo> --format markdown --output LAUNCH.md`. | Offline launch-readiness audit |
-| 8-13s | Show report | Scroll `LAUNCH.md`: score table, prioritized findings, repository signals. | Scores, gaps, and concrete fixes |
-| 13-18s | Show semantic packaging | Switch to improved README sections or launch plan: hero, quickstart, proof, limits. | Positioning + README + quickstart |
-| 18-22s | Show benchmarks | Open `docs/BENCHMARKS.md` or the benchmark config/table. | Compare adjacent tools, not just stars |
-| 22-26s | Show bilingual launch pack | Open X/V2EX/即刻 draft headings. | English + Chinese release copy |
-| 26-30s | CTA | Repository homepage with README/social card. | GitHub Launch Studio — review before you launch |
+The shipped scene-by-scene breakdown is the table above; suggested narration beats are listed under *Voiceover / caption script*.
 
 ## Suggested commands
 

@@ -6,6 +6,10 @@
 
 它会帮你完成项目定位、README 和快速上手改造、演示素材策划、中英文发布文案与发布检查清单。重点是真实可验证的采用路径，不做刷星、虚假背书或群发营销。
 
+[![30 秒 GitHub Launch Studio 演示](./assets/launch-demo.gif)](./assets/launch-demo.mp4)
+
+*30 秒流程：仓库体检、Markdown 报告、发布包装、对标地图和中英文文案。*
+
 ![GitHub Launch Studio 社交卡片](./assets/social-card.png)
 
 **体检 → 定位 → 对标 → 包装 → 演示 → 发布**
@@ -91,6 +95,7 @@ python3 scripts/repo_audit.py /path/to/repository \
 
 ## 发布工具包
 
+- [30 秒演示视频](./assets/launch-demo.mp4) / [动态 GIF](./assets/launch-demo.gif)：已渲染好的 README 演示。
 - [30 秒 Demo 分镜](./docs/demo-storyboard.md)：录制计划、字幕和发布前检查。
 - [待审发布文案](./docs/launch-posts.md)：X、V2EX、即刻草稿，确认前不会自动发布。
 
@@ -112,6 +117,17 @@ python3 scripts/benchmark_github.py \
 python3 -m pip install pillow
 python3 scripts/render_social_card.py --output assets/social-card.png
 ```
+
+## 重新生成 Demo
+
+这个可复现 Demo 依赖 [Pillow](https://pillow.readthedocs.io/) 和 `ffmpeg`：
+
+```bash
+python3 -m pip install pillow
+python3 scripts/render_launch_demo.py
+```
+
+脚本会生成 `assets/launch-demo.mp4` 和 `assets/launch-demo.gif`，不录制桌面，也不会暴露本机终端路径。
 
 ## 工作方式
 

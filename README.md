@@ -6,6 +6,10 @@ A Codex skill for turning a working repository into a launch-ready open-source p
 
 It helps you sharpen positioning, improve the README and quickstart, plan convincing demo assets, and prepare Chinese/English release copy—without fake growth or noisy marketing.
 
+[![30-second GitHub Launch Studio demo](./assets/launch-demo.gif)](./assets/launch-demo.mp4)
+
+*30-second walkthrough: audit, Markdown report, launch package, benchmark map, and bilingual copy.*
+
 ![GitHub Launch Studio social card](./assets/social-card.png)
 
 **Audit → Position → Benchmark → Package → Demo → Launch**
@@ -93,6 +97,7 @@ The scores are heuristics for a first pass. The skill should still inspect the r
 
 ## Launch kit
 
+- [30-second demo video](./assets/launch-demo.mp4) / [animated GIF](./assets/launch-demo.gif) — the rendered walkthrough included in the README.
 - [30-second demo storyboard](./docs/demo-storyboard.md) — recording plan, captions, and pre-flight checks.
 - [Draft launch posts](./docs/launch-posts.md) — X, V2EX, and 即刻 drafts for review before posting.
 
@@ -114,6 +119,17 @@ The repository includes a rendered `assets/social-card.png`. To regenerate it lo
 python3 -m pip install pillow
 python3 scripts/render_social_card.py --output assets/social-card.png
 ```
+
+## Regenerate the demo
+
+The deterministic demo requires [Pillow](https://pillow.readthedocs.io/) and `ffmpeg`:
+
+```bash
+python3 -m pip install pillow
+python3 scripts/render_launch_demo.py
+```
+
+It writes `assets/launch-demo.mp4` and `assets/launch-demo.gif` without recording the desktop or exposing local terminal paths.
 
 ## How it works
 
