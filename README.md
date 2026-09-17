@@ -160,6 +160,11 @@ Read [SKILL.md](./SKILL.md) for the full operating rules and the [references](./
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) and [SECURITY.md](./SECURITY.md).
 
+
+## Related skills
+
+- [preflight-decks](https://github.com/MJorgin/preflight-decks) — concept-first director for HTML pitch/talk decks: a hard concept gate, three real visual directions, and dual-viewport verification. From the same author.
+
 ## License
 
 [MIT](./LICENSE)

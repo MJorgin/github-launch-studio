@@ -158,6 +158,11 @@ python3 scripts/render_launch_demo.py
 
 请见 [CONTRIBUTING.md](./CONTRIBUTING.md) 和 [SECURITY.md](./SECURITY.md)。
 
+
+## 相关 skill
+
+- [preflight-decks](https://github.com/MJorgin/preflight-decks)：概念先行的 HTML 幻灯片导演——硬概念门、三版真实视觉方向、双视口机械验收。同作者作品。
+
 ## 许可证
 
 [MIT](./LICENSE)
